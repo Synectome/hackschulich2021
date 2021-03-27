@@ -76,11 +76,8 @@ valid_data_gen <- image_data_generator(
 # training images
 train_image_array_gen <- flow_images_from_directory(train_images_dir, 
                                                     train_data_gen,
-                                                    target_size = target_size,
-                                                    class_mode = "categorical",
-                                                    color_mode = "grayscale",
-                                                    classes = NULL,
-                                                    seed = 42)#,
+                                                    class_mode = "sparse",
+                                                    target_size = target_size)#,
                                                     # save_format = "png")
 
 # validation images
@@ -88,7 +85,7 @@ valid_image_array_gen <- flow_images_from_directory(test_images_dir,
                                                     valid_data_gen,
                                                     target_size = target_size,
                                                     color_mode = "grayscale",
-                                                    class_mode = "categorical",
+                                                    class_mode = NULL,
                                                     classes = NULL,
                                                     seed = 42)
 
