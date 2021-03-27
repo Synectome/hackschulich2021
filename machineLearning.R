@@ -55,6 +55,19 @@ valid_data_gen <- image_data_generator(
 ) 
 
 #--load images into memory
+
+library(EBImage)
+mypics_original <- list()
+mypics_edited <- list()
+
+for (i in 1:length(train_images)){
+  mypics[[i]] <- readImage(file.path(train_images_dir, train_images[i]))
+  mypics_edited[[i]] <- channel(mypics_original[[1]], 'gray')
+  mypics_edited[[i]] <- resize(mypics_edited[[i]], 840, 1024, output.origin = c(0, 0), antialias = FALSE)
+}
+
+
+
 # https://www.rdocumentation.org/packages/keras/versions/2.3.0.0/topics/flow_images_from_directory
 # flow_images_from_directory(
 #   directory,
@@ -74,29 +87,29 @@ valid_data_gen <- image_data_generator(
 #   interpolation = "nearest"
 # )
 # training images
-train_image_array_gen <- flow_images_from_directory(train_images_dir, 
-                                                    train_data_gen,
-                                                    class_mode = "sparse",
-                                                    target_size = target_size)#,
-                                                    # save_format = "png")
-
-# validation images
-valid_image_array_gen <- flow_images_from_directory(test_images_dir, 
-                                                    valid_data_gen,
-                                                    target_size = target_size,
-                                                    color_mode = "grayscale",
-                                                    class_mode = NULL,
-                                                    classes = NULL,
-                                                    seed = 42)
-
-train_classes_indices <- train_image_array_gen$class_indices
-save(train_classes_indices, file = file.path(data_dir, "train_classes_indices.RData"))
+# train_image_array_gen <- flow_images_from_directory(train_images_dir, 
+#                                                     train_data_gen,
+#                                                     class_mode = "sparse",
+#                                                     target_size = target_size)#,
+#                                                     # save_format = "png")
+# 
+# # validation images
+# valid_image_array_gen <- flow_images_from_directory(test_images_dir, 
+#                                                     valid_data_gen,
+#                                                     target_size = target_size,
+#                                                     color_mode = "grayscale",
+#                                                     class_mode = NULL,
+#                                                     classes = NULL,
+#                                                     seed = 42)
+# 
+# train_classes_indices <- train_image_array_gen$class_indices
+# save(train_classes_indices, file = file.path(data_dir, "train_classes_indices.RData"))
 
 
 #----- Configuring Layers of the model ----
 model <- keras_model_sequential()
 model %>%
-  layer_flatten(input_shape = c(28, 28)) %>% # change the 2d array of the image into a 1d array to feed into the network
+  layer_flatten(input_shape = c(1024, 840)) %>% # change the 2d array of the image into a 1d array to feed into the network
   layer_dense(units = 2048, activation = 'relu') %>%
   layer_dense(units = 4, activation = 'softmax') # corresponds to the number of classifications we want, For the xrays, itll be 4 of them?
 
